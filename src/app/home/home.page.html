@@ -7,6 +7,14 @@
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+  <ion-list>
+    <ion-item *ngFor = "let aluno of alunos">
+      <ion-label>{{aluno.id}}</ion-label>
+      <ion-label>{{aluno.nome}}</ion-label>
+      <ion-label>{{aluno.site}}</ion-label>
+      <ion-label>{{aluno.endereco}}</ion-label>
+      <ion-label>{{aluno.telefone}}</ion-label>
+      <ion-label>{{aluno.nota}}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

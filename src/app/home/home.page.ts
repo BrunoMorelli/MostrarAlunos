@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { LoadingController, AlertController } from '@ionic/angular';
+import { AlunosService } from '../providers/alunos.service';
 import { Aluno } from "../modelos/Alunos";
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: "app-home",
@@ -10,14 +12,31 @@ import { Aluno } from "../modelos/Alunos";
 export class HomePage implements OnInit {
   public alunos: Aluno[];
 
-  constructor(public http: HttpClient) {}
+  constructor(private Loading: LoadingController,
+              private alert: AlertController,
+              private alunosService: AlunosService) {}
 
-  ngOnInit(): void {
-    this.http
-      .get<Aluno[]>("http://gilsonpolito-api.herokuapp.com/alunos")
-      .subscribe(alunos => {
+  async ngOnInit() {
+    const loading = await this.Loading.create(
+      {
+        message: 'Aguarde o carregamento dos alunos...'
+      });
+      await loading.present();
+
+      this.alunosService.listar().subscribe(alunos => {
         this.alunos = alunos;
-      }
-    )
+      }, async (err: HttpErrorResponse) => {
+        console.log('Deu erro ´-´' + err.status)
+        const al = await this.alert.create({
+          header: 'Erro!',
+          message: 'Erro ao listar alunos',
+          buttons: [{text: 'OK'}]
+        });
+
+        await al.present()
+      }).add(
+        () => {
+          loading.dismiss();
+        });
   }
 }
